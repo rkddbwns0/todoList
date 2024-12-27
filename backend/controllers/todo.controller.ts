@@ -1,10 +1,24 @@
-import { Body, Controller, Delete, Post, Put } from '@nestjs/common';
-import { CreateTodoDto, DeleteTodoDto, UpdateTodoDto } from 'dto/todo.dto';
+import { Body, Controller, Delete, Get, Post, Put } from '@nestjs/common';
+import {
+  CreateTodoDto,
+  DeleteTodoDto,
+  SelectTodoDto,
+  UpdateTodoDto,
+} from 'dto/todo.dto';
 import { TodoService } from 'services/todo.service';
 
 @Controller('todo')
 export class TodoController {
   constructor(private readonly todoService: TodoService) {}
+
+  @Get('select')
+  async selectTodo(@Body() selectTodoDto: SelectTodoDto) {
+    try {
+      return await this.todoService.selectTodo(selectTodoDto);
+    } catch (error) {
+      console.error(error);
+    }
+  }
 
   @Post('create')
   async createTodo(@Body() createTodoDto: CreateTodoDto) {

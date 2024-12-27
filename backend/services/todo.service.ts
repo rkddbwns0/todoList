@@ -1,6 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { DeleteTodoDto, UpdateTodoDto } from 'dto/todo.dto';
+import {
+  CreateTodoDto,
+  DeleteTodoDto,
+  SelectTodoDto,
+  UpdateTodoDto,
+} from 'dto/todo.dto';
 import { TodoEntity } from 'entity/todo.entity';
 import { UserEntity } from 'entity/user.entity';
 import { Repository } from 'typeorm';
@@ -15,16 +20,35 @@ export class TodoService {
     private readonly todoRepository: Repository<TodoEntity>,
   ) {}
 
-  async createTodo({ email, title, descript }) {
-    let user = await this.userRepository.findOne({ where: { email: email } });
-
-    console.log(email, title, descript, user);
+  async selectTodo(input: SelectTodoDto) {
+    let user = await this.userRepository.findOne({
+      where: { email: input.email },
+    });
+    const selectData = { user };
 
     if (!user) {
       console.log('유저 정보가 없습니다.');
     } else {
       try {
-        const todoData = { user, title, descript, create_at: new Date() };
+        return await this.todoRepository.find({
+          where: { user },
+        });
+      } catch (error) {
+        console.error(error);
+      }
+    }
+  }
+
+  async createTodo(input: CreateTodoDto) {
+    let user = await this.userRepository.findOne({
+      where: { email: input.email },
+    });
+
+    if (!user) {
+      console.log('유저 정보가 없습니다.');
+    } else {
+      try {
+        const todoData = { user, ...input, create_at: new Date() };
         const createData = await this.todoRepository.create(todoData);
 
         return await this.todoRepository.save(createData);

@@ -8,6 +8,13 @@ import {
   MinLength,
 } from 'class-validator';
 
+export class SelectTodoDto {
+  @IsNotEmpty()
+  @IsString()
+  @IsEmail()
+  email: string;
+}
+
 export class CreateTodoDto {
   @IsNotEmpty()
   @IsString()
