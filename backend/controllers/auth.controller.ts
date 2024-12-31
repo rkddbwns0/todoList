@@ -16,10 +16,10 @@ export class AuthController {
     try {
       await this.authService.setRefreshToken(loginDto, res);
       const jwt = await this.authService.login(loginDto);
-      console.log(jwt);
+
       return res.status(200).send(jwt);
     } catch (error) {
-      console.error(error);
+      return res.status(400).json({ message: '존재하지 않는 회원입니다.' });
     }
   }
 }

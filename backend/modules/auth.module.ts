@@ -7,7 +7,13 @@ import { AuthService } from 'services/auth.service';
 import { UserService } from 'services/user.service';
 
 @Module({
-  imports: [JwtModule.register({}), TypeOrmModule.forFeature([UserEntity])],
+  imports: [
+    JwtModule.register({
+      global: true,
+      secret: process.env.JWT_TOKEN_SECRET,
+    }),
+    TypeOrmModule.forFeature([UserEntity]),
+  ],
   controllers: [AuthController],
   providers: [AuthService, UserService],
 })

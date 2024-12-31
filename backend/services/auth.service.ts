@@ -32,28 +32,27 @@ export class AuthService {
   }
 
   getAccessToken({ user }): String {
-    return this.jwtService.sign(
+    this.jwtService.sign(
       {
         email: user.email,
       },
       {
-        secret: process.env.JWT_TOKEN_SECRET,
         expiresIn: '1h',
       },
     );
+    return;
   }
 
   setRefreshToken(user, res) {
-    const refreshToken = this.jwtService.sign(
+    const refreshToken = this.jwtService.signAsync(
       {
         email: user.email,
       },
       {
-        secret: process.env.JWT_TOKEN_SECRET,
         expiresIn: '2d',
       },
     );
     res.setHeader('Set-Cookie', `refreshToken=${refreshToken}`);
-    return;
+    return refreshToken;
   }
 }

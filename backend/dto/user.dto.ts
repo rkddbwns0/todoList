@@ -7,19 +7,19 @@ import {
 } from 'class-validator';
 
 export class CreateUserDto {
-  @IsNotEmpty()
+  @IsNotEmpty({ message: '이름을 입력해 주세요.' })
   @IsString()
   name: string;
 
-  @IsNotEmpty()
+  @IsNotEmpty({ message: '이메일을 입력해 주세요.' })
   @IsString()
-  @IsEmail()
+  @IsEmail({}, { message: '이메일 형식에 맞게 입력해 주세요.' })
   email: string;
 
-  @IsNotEmpty()
+  @IsNotEmpty({ message: '비밀번호를 입력해 주세요.' })
   @IsString()
-  @MaxLength(15)
-  @MinLength(8)
+  @MaxLength(15, { message: '비밀번호는 최대 15자입니다.' })
+  @MinLength(8, { message: '비밀번호는 최소 8자입니다.' })
   password: string;
 }
 
