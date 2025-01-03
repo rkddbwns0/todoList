@@ -35,7 +35,7 @@ export class UserController {
   @UseGuards(LocalServiceAuthGuard)
   @Post('login')
   async login(@Req() req, @Body() loginDto: LoginDto) {
-    const token = this.authService.JwtLoginService(req.user);
+    const token = await this.authService.login(loginDto);
     return token;
   }
 }

@@ -4,6 +4,7 @@ import { UserEntity } from 'entity/user.entity';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
+import { LoginDto } from 'dto/user.dto';
 
 @Injectable()
 export class AuthService {
@@ -13,6 +14,16 @@ export class AuthService {
 
     private readonly jwtService: JwtService,
   ) {}
+
+  async login(input: LoginDto) {
+    const user = await this.validateServiceUser(input.email, input.password);
+    const access_token = await this.aceessJwtLoginService(user);
+    const refresh_token = await this.refreshJwtLoginService(user);
+
+    await this.currentUserRefreshToken(input.email, refresh_token);
+
+    return { access_token, refresh_token };
+  }
 
   async validateServiceUser(email: string, password: string) {
     const user = await this.userRepository.findOne({
@@ -29,14 +40,46 @@ export class AuthService {
     return user;
   }
 
-  JwtLoginService(user: UserEntity) {
+  async aceessJwtLoginService(user: UserEntity) {
     const payload = {
       email: user.email,
       name: user.name,
     };
 
-    return {
-      token: this.jwtService.sign(payload),
+    const access_token = await this.jwtService.sign(payload, {
+      expiresIn: '1h',
+    });
+
+    return access_token;
+  }
+
+  async refreshJwtLoginService(user: UserEntity) {
+    const payload = {
+      email: user.email,
+      name: user.name,
     };
+
+    const refresh_token = await this.jwtService.sign(payload, {
+      expiresIn: '7d',
+    });
+
+    return refresh_token;
+  }
+
+  async currentUserRefreshToken(email: string, refreshToken: string) {
+    const hashRefreshToken = await bcrypt.hash(refreshToken, 10);
+
+    const now = new Date();
+    const refreshTokenExp = new Date(now.getTime() + 604800000);
+
+    const update = await this.userRepository.update(
+      { email: email },
+      {
+        refresh_token: hashRefreshToken,
+        refresh_token_exp: refreshTokenExp,
+      },
+    );
+
+    return update;
   }
 }
