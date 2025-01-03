@@ -1,9 +1,9 @@
-import { Injectable, UnprocessableEntityException } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
-import { LoginDto } from 'dto/user.dto';
+import { ForbiddenException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserEntity } from 'entity/user.entity';
 import { Repository } from 'typeorm';
+import * as bcrypt from 'bcrypt';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class AuthService {
@@ -14,45 +14,29 @@ export class AuthService {
     private readonly jwtService: JwtService,
   ) {}
 
-  async login(input: LoginDto) {
-    let user = await this.userRepository.findOne({
-      where: { email: input.email },
+  async validateServiceUser(email: string, password: string) {
+    const user = await this.userRepository.findOne({
+      where: { email: email },
     });
 
     if (!user) {
-      throw new UnprocessableEntityException('존재하지 않는 유저입니다.');
+      throw new ForbiddenException('등록되지 않은 사용자입니다.');
     }
 
-    if (!input.password) {
-      throw new UnprocessableEntityException('비밀번호가 일치하지 않습니다.');
+    if (!(await bcrypt.compare(password, user.password))) {
+      throw new ForbiddenException('비밀번호가 일치하지 않습니다.');
     }
-
-    const jwt = this.getAccessToken({ user });
-    return jwt;
+    return user;
   }
 
-  getAccessToken({ user }): String {
-    this.jwtService.sign(
-      {
-        email: user.email,
-      },
-      {
-        expiresIn: '1h',
-      },
-    );
-    return;
-  }
+  JwtLoginService(user: UserEntity) {
+    const payload = {
+      email: user.email,
+      name: user.name,
+    };
 
-  setRefreshToken(user, res) {
-    const refreshToken = this.jwtService.signAsync(
-      {
-        email: user.email,
-      },
-      {
-        expiresIn: '2d',
-      },
-    );
-    res.setHeader('Set-Cookie', `refreshToken=${refreshToken}`);
-    return refreshToken;
+    return {
+      token: this.jwtService.sign(payload),
+    };
   }
 }

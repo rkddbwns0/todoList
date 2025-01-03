@@ -12,7 +12,8 @@ const Login = () => {
     const handleLogin = async () => {
         try {
             const response = await axios.post(`${SERVER_ADDRESS}/auth/login`, { email: email, password: password });
-            if (response.status === 200) {
+            console.log(response.data);
+            if (response.data.success === true) {
                 navigate('/todo');
             }
         } catch (error) {

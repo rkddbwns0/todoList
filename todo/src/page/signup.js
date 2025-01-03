@@ -18,7 +18,7 @@ const Signup = () => {
             });
             if (response.status === 200) {
                 alert(`${response.data.message}`);
-                navigate('/login');
+                navigate('/');
             } else {
                 alert(response.data.message);
             }

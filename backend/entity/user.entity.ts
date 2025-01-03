@@ -16,7 +16,7 @@ export class UserEntity {
   password: string;
 
   @Column({ type: 'varchar', nullable: true })
-  refresh_token: string;
+  refresh_token: string | null;
 
   @Column({ type: 'datetime' })
   create_at: Date;
