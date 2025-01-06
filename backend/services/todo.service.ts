@@ -9,7 +9,7 @@ import {
 } from 'dto/todo.dto';
 import { TodoEntity } from 'entity/todo.entity';
 import { UserEntity } from 'entity/user.entity';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 
 @Injectable()
 export class TodoService {
@@ -113,10 +113,10 @@ export class TodoService {
       console.log('유저 정보가 없잖아');
     }
 
-    const findTodoData = await this.todoRepository.findOne({
+    const findTodoData = await this.todoRepository.find({
       where: {
         user: user,
-        no: input.no,
+        no: In(input.no),
       },
     });
 
@@ -124,6 +124,6 @@ export class TodoService {
       console.log('해당 데이터가 없습니다.');
     }
 
-    await this.todoRepository.update(findTodoData, { isDone: true });
+    await this.todoRepository.update({ no: In(input.no) }, { isDone: true });
   }
 }

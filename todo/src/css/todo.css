@@ -1,3 +1,50 @@
+.todoContainer {
+    display: flex;
+    flex: 1;
+    justify-content: center;
+    align-items: center;
+}
+
+.todoView {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    border: 1px solid black;
+    margin: 3%;
+    align-items: center;
+    justify-self: center;
+}
+
 .successDescript {
-    text-decoration: line-through;
+    text-decoration-line: line-through;
+}
+
+li {
+    list-style-type: none;
+}
+
+.checkbox,
+.successCheckbox {
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    border-radius: 5px;
+    border-color: transparent;
+    background-color: white;
+    justify-content: center;
+}
+
+.successCheckbox:checked {
+    background-color: white;
+    border: 1px solid rgb(201, 194, 194);
+}
+
+.checkbox:checked::before,
+.successCheckbox:checked::before {
+    position: absolute;
+    content: '✓';
+    color: rgb(63, 250, 78);
+    font-size: 15px;
+    font-weight: bold;
+    align-self: center;
 }

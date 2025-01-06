@@ -45,9 +45,13 @@ export class TodoController {
   }
 
   @Put('success')
-  async successTodo(@Body() successTodoDto: SuccessTodoDto) {
+  async successTodo(
+    @Body() successTodoDto: SuccessTodoDto,
+    @Res() res: Response,
+  ) {
     try {
-      return await this.todoService.successTodo(successTodoDto);
+      await this.todoService.successTodo(successTodoDto);
+      res.status(200).json({ message: '변경 완료' });
     } catch (error) {
       console.error(error);
     }

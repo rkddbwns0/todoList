@@ -1,3 +1,4 @@
+import { Type } from 'class-transformer';
 import {
   IsDate,
   IsEmail,
@@ -66,6 +67,7 @@ export class SuccessTodoDto {
   email: string;
 
   @IsNotEmpty()
-  @IsNumber()
-  no: number;
+  @Type(() => Number)
+  @IsNumber({}, { each: true })
+  no: number[];
 }
