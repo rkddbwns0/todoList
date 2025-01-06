@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import '../css/login.css';
 import axios from 'axios';
-import { SERVER_ADDRESS } from '../css/components/serverAddress';
+import { SERVER_ADDRESS } from '../components/serverAddress';
 import { useNavigate } from 'react-router-dom';
 
 const Login = () => {
@@ -11,9 +11,13 @@ const Login = () => {
 
     const handleLogin = async () => {
         try {
-            const response = await axios.post(`${SERVER_ADDRESS}/auth/login`, { email: email, password: password });
-            console.log(response.data);
-            if (response.data.success === true) {
+            const response = await axios.post(
+                `${SERVER_ADDRESS}/user/login`,
+                { email: email, password: password },
+                { withCredentials: true }
+            );
+            if (response.status === 200) {
+                localStorage.setItem('user', JSON.stringify(response.data.user));
                 navigate('/todo');
             }
         } catch (error) {
@@ -44,11 +48,10 @@ const Login = () => {
                             onChange={(text) => setPassword(text.target.value)}
                         />
 
-                        <div className="loginBtnView">
-                            <button className="loginBtn" type="submit">
-                                로그인
-                            </button>
-                        </div>
+                        <button className="loginBtn" type="submit">
+                            로그인
+                        </button>
+
                         <div>
                             <a href="/signup">회원가입</a>
                         </div>

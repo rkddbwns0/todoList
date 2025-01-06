@@ -20,9 +20,11 @@ export class AuthService {
     const access_token = await this.aceessJwtLoginService(user);
     const refresh_token = await this.refreshJwtLoginService(user);
 
+    const storageData = { email: user.email, name: user.name };
+
     await this.currentUserRefreshToken(input.email, refresh_token);
 
-    return { access_token, refresh_token };
+    return { access_token, refresh_token, storageData };
   }
 
   async validateServiceUser(email: string, password: string) {

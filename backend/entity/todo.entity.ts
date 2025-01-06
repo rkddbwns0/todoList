@@ -12,11 +12,11 @@ export class TodoEntity {
   @PrimaryGeneratedColumn()
   no: number;
 
-  @Column({ type: 'varchar' })
-  title: string;
-
   @Column({ type: 'text' })
   descript: string;
+
+  @Column({ type: 'boolean', default: false })
+  isDone: boolean;
 
   @Column({ type: 'datetime' })
   create_at: Date;

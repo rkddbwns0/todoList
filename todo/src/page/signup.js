@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { useState } from 'react';
-import { SERVER_ADDRESS } from '../css/components/serverAddress';
+import { SERVER_ADDRESS } from '../components/serverAddress';
 import { useNavigate } from 'react-router-dom';
 
 const Signup = () => {

@@ -4,6 +4,7 @@ import {
   CreateTodoDto,
   DeleteTodoDto,
   SelectTodoDto,
+  SuccessTodoDto,
   UpdateTodoDto,
 } from 'dto/todo.dto';
 import { TodoEntity } from 'entity/todo.entity';
@@ -24,15 +25,16 @@ export class TodoService {
     let user = await this.userRepository.findOne({
       where: { email: input.email },
     });
-    const selectData = { user };
 
     if (!user) {
       console.log('유저 정보가 없습니다.');
     } else {
       try {
-        return await this.todoRepository.find({
+        const result = await this.todoRepository.find({
           where: { user },
         });
+        console.log(result);
+        return result;
       } catch (error) {
         console.error(error);
       }
@@ -83,7 +85,7 @@ export class TodoService {
     }
   }
 
-  async deleteTodoDto(input: DeleteTodoDto) {
+  async deleteTodo(input: DeleteTodoDto) {
     let user = await this.userRepository.findOne({
       where: { email: input.email },
     });
@@ -100,5 +102,28 @@ export class TodoService {
     } catch (error) {
       console.error(error);
     }
+  }
+
+  async successTodo(input: SuccessTodoDto) {
+    let user = await this.userRepository.findOne({
+      where: { email: input.email },
+    });
+
+    if (!user) {
+      console.log('유저 정보가 없잖아');
+    }
+
+    const findTodoData = await this.todoRepository.findOne({
+      where: {
+        user: user,
+        no: input.no,
+      },
+    });
+
+    if (!findTodoData) {
+      console.log('해당 데이터가 없습니다.');
+    }
+
+    await this.todoRepository.update(findTodoData, { isDone: true });
   }
 }

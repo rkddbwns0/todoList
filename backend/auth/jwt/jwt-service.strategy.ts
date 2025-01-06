@@ -12,11 +12,16 @@ export class JwtServiceStrategy extends PassportStrategy(
     super({
       secretOrKey: configService.get<string>('JWT_TOKEN_SECRET'),
       ignoreExpiration: true,
-      jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+      jwtFromRequest: ExtractJwt.fromExtractors([
+        (request) => {
+          return request?.cookies?.token;
+        },
+      ]),
     });
   }
 
   async validate(payload: any) {
+    console.log(this.validate);
     return {
       email: payload.email,
       name: payload.name,

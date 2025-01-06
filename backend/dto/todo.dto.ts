@@ -1,4 +1,5 @@
 import {
+  IsDate,
   IsEmail,
   IsNotEmpty,
   IsNumber,
@@ -20,12 +21,6 @@ export class CreateTodoDto {
   @IsString()
   @IsEmail()
   email: string;
-
-  @IsNotEmpty()
-  @IsString()
-  @MinLength(5)
-  @MaxLength(30)
-  title: string;
 
   @IsNotEmpty()
   @IsString()
@@ -62,4 +57,15 @@ export class DeleteTodoDto {
   @IsString()
   @IsEmail()
   email: string;
+}
+
+export class SuccessTodoDto {
+  @IsNotEmpty()
+  @IsString()
+  @IsEmail()
+  email: string;
+
+  @IsNotEmpty()
+  @IsNumber()
+  no: number;
 }
