@@ -7,12 +7,14 @@
 
 .todoView {
     display: flex;
-    flex: 1;
     flex-direction: column;
     border: 1px solid black;
+    border-radius: 20px;
     margin: 3%;
     align-items: center;
     justify-self: center;
+    width: 30%;
+    padding: 2%;
 }
 
 .successDescript {
@@ -32,6 +34,7 @@ li {
     border-color: transparent;
     background-color: white;
     justify-content: center;
+    border: 1px solid rgb(201, 194, 194);
 }
 
 .successCheckbox:checked {

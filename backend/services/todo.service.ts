@@ -32,8 +32,8 @@ export class TodoService {
       try {
         const result = await this.todoRepository.find({
           where: { user },
+          order: { isDone: 'DESC', create_at: 'ASC' },
         });
-        console.log(result);
         return result;
       } catch (error) {
         console.error(error);
@@ -86,11 +86,10 @@ export class TodoService {
   }
 
   async deleteTodo(input: DeleteTodoDto) {
+    console.log(input);
     let user = await this.userRepository.findOne({
       where: { email: input.email },
     });
-
-    console.log(user);
 
     const todoData = {
       no: input.no,

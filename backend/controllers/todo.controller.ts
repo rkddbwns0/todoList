@@ -16,9 +16,7 @@ export class TodoController {
   @Post('select')
   async selectTodo(@Body() selectTodoDto: SelectTodoDto, @Res() res: Response) {
     try {
-      console.log(selectTodoDto);
       const result = await this.todoService.selectTodo(selectTodoDto);
-      console.log(result);
       res.json(result);
     } catch (error) {
       console.error(error);
@@ -58,9 +56,13 @@ export class TodoController {
   }
 
   @Delete('delete')
-  async deleteTodoDto(@Body() deleteTodoDto: DeleteTodoDto) {
+  async deleteTodoDto(
+    @Body() deleteTodoDto: DeleteTodoDto,
+    @Res() res: Response,
+  ) {
     try {
-      return await this.todoService.deleteTodo(deleteTodoDto);
+      await this.todoService.deleteTodo(deleteTodoDto);
+      res.status(200).json({ message: '삭제 성공' });
     } catch (error) {
       console.error(error);
     }

@@ -17,7 +17,6 @@ const Todo = () => {
     const todoData = async () => {
         if (user) {
             try {
-                console.log(user?.email);
                 const response = await axios.post(`${SERVER_ADDRESS}/todo/select`, {
                     email: user?.email,
                 });
@@ -31,25 +30,48 @@ const Todo = () => {
 
     const insertTodo = async () => {
         if (user) {
-            try {
-                const response = axios.post(`${SERVER_ADDRESS}/todo/create`, {
-                    email: user?.email,
-                    descript: descript,
-                });
-                window.location.reload();
-            } catch (error) {
-                throw error;
+            if (descript === '') {
+                alert('내용을 입력해 주세요.');
+                return;
+            } else {
+                try {
+                    const response = axios.post(`${SERVER_ADDRESS}/todo/create`, {
+                        email: user?.email,
+                        descript: descript,
+                    });
+                    window.location.reload();
+                } catch (error) {
+                    throw error;
+                }
             }
         }
     };
 
     const successTodo = async () => {
-        console.log(checkList);
         if (user) {
             try {
                 const response = await axios.put(`${SERVER_ADDRESS}/todo/success`, {
                     email: user?.email,
                     no: checkList,
+                });
+                if (response.status === 200) {
+                    window.location.reload();
+                }
+            } catch (error) {
+                console.error(error);
+            }
+        }
+    };
+
+    const deleteTodo = async (item) => {
+        const number = Number(item);
+        if (user) {
+            try {
+                const response = await axios.delete(`${SERVER_ADDRESS}/todo/delete`, {
+                    data: {
+                        email: user?.email,
+                        no: number,
+                    },
                 });
                 if (response.status === 200) {
                     window.location.reload();
@@ -76,10 +98,6 @@ const Todo = () => {
         }
     }, [user]);
 
-    if (!user) {
-        return <div>로딩</div>;
-    }
-
     return (
         <div className="todoContainer">
             <div className="todoView">
@@ -94,7 +112,7 @@ const Todo = () => {
                         {todoList && todoList.length > 0
                             ? todoList?.map((item, index) => (
                                   <div key={index}>
-                                      <section>
+                                      <section className="todoData">
                                           <ul>
                                               <li className={item.isDone ? 'successDescript' : ''}>{item.descript}</li>
                                               <input
@@ -106,6 +124,14 @@ const Todo = () => {
                                                   checked={item.isDone || checkList.includes(item.no)}
                                               />
                                           </ul>
+                                          <form
+                                              action={() => {
+                                                  deleteTodo(item.no);
+                                              }}
+                                              method="post"
+                                          >
+                                              <button type="submit">삭제하기</button>
+                                          </form>
                                       </section>
                                   </div>
                               ))
@@ -114,11 +140,9 @@ const Todo = () => {
                             <input value={descript} onChange={(text) => setDescript(text.target.value)} />
                             <button>추가하기</button>
                         </form>
-                        {todoList && todoList.length > 0 ? (
-                            <form action={successTodo} method="post">
-                                <button type="submit">완료하기</button>
-                            </form>
-                        ) : null}
+                        <form action={successTodo} method="post">
+                            <button type="submit">완료하기</button>
+                        </form>
                     </div>
                 </div>
             </div>

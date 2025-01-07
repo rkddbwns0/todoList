@@ -51,13 +51,14 @@ export class UpdateTodoDto {
 
 export class DeleteTodoDto {
   @IsNotEmpty()
-  @IsNumber()
-  no: number;
-
-  @IsNotEmpty()
   @IsString()
   @IsEmail()
   email: string;
+
+  @IsNotEmpty()
+  @Type(() => Number)
+  @IsNumber({}, { each: true })
+  no: number;
 }
 
 export class SuccessTodoDto {
