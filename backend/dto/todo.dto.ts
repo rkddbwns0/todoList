@@ -30,21 +30,6 @@ export class CreateTodoDto {
   descript: string;
 }
 
-export class UpdateTodoDto {
-  @IsNumber()
-  @IsNotEmpty()
-  no: number;
-
-  @IsNotEmpty()
-  @IsString()
-  @IsEmail()
-  email: string;
-
-  @IsString()
-  @IsOptional()
-  descript?: string;
-}
-
 export class DeleteTodoDto {
   @IsNotEmpty()
   @Type(() => Number)

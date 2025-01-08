@@ -5,7 +5,6 @@ import {
   PinTodoDto,
   SelectTodoDto,
   SuccessTodoDto,
-  UpdateTodoDto,
 } from 'dto/todo.dto';
 import { Response } from 'express';
 import { TodoService } from 'services/todo.service';
@@ -29,16 +28,6 @@ export class TodoController {
     try {
       await this.todoService.createTodo(createTodoDto);
       res.status(200).json({ message: '작성 성공' });
-    } catch (error) {
-      console.error(error);
-    }
-  }
-
-  @Put('update')
-  async updateTodo(@Body() updateTodoDto: UpdateTodoDto, @Res() res: Response) {
-    try {
-      await this.todoService.updateTodo(updateTodoDto);
-      res.status(200).json({ message: '내용 변경 완료' });
     } catch (error) {
       console.error(error);
     }

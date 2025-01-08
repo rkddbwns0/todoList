@@ -6,7 +6,6 @@ import {
   PinTodoDto,
   SelectTodoDto,
   SuccessTodoDto,
-  UpdateTodoDto,
 } from 'dto/todo.dto';
 import { TodoEntity } from 'entity/todo.entity';
 import { UserEntity } from 'entity/user.entity';
@@ -55,31 +54,6 @@ export class TodoService {
         const createData = await this.todoRepository.create(todoData);
 
         return await this.todoRepository.save(createData);
-      } catch (error) {
-        console.error(error);
-      }
-    }
-  }
-
-  async updateTodo(input: UpdateTodoDto) {
-    let user = await this.userRepository.findOne({
-      where: { email: input.email },
-    });
-
-    const todoData = {
-      user,
-      ...input,
-      update_at: new Date(),
-    };
-
-    if (!user) {
-      console.log('유저 정보를 찾을 수 없습니다.');
-      return;
-    } else {
-      try {
-        const result = await this.todoRepository.save(todoData);
-
-        return result;
       } catch (error) {
         console.error(error);
       }
