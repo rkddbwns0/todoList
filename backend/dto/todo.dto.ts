@@ -42,23 +42,19 @@ export class UpdateTodoDto {
 
   @IsString()
   @IsOptional()
-  title?: string;
-
-  @IsString()
-  @IsOptional()
   descript?: string;
 }
 
 export class DeleteTodoDto {
   @IsNotEmpty()
-  @IsString()
-  @IsEmail()
-  email: string;
-
-  @IsNotEmpty()
   @Type(() => Number)
   @IsNumber({}, { each: true })
   no: number;
+
+  @IsNotEmpty()
+  @IsString()
+  @IsEmail()
+  email: string;
 }
 
 export class SuccessTodoDto {
@@ -70,5 +66,17 @@ export class SuccessTodoDto {
   @IsNotEmpty()
   @Type(() => Number)
   @IsNumber({}, { each: true })
-  no: number[];
+  no: number;
+}
+
+export class PinTodoDto {
+  @IsNotEmpty()
+  @IsNumber({}, { each: true })
+  @Type(() => Number)
+  no: number;
+
+  @IsNotEmpty()
+  @IsEmail()
+  @IsString()
+  email: string;
 }

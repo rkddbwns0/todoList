@@ -18,6 +18,9 @@ export class TodoEntity {
   @Column({ type: 'boolean', default: false })
   isDone: boolean;
 
+  @Column({ type: 'boolean', default: false })
+  pin: boolean;
+
   @Column({ type: 'datetime' })
   create_at: Date;
 

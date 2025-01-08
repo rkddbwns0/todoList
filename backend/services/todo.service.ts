@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import {
   CreateTodoDto,
   DeleteTodoDto,
+  PinTodoDto,
   SelectTodoDto,
   SuccessTodoDto,
   UpdateTodoDto,
@@ -32,7 +33,7 @@ export class TodoService {
       try {
         const result = await this.todoRepository.find({
           where: { user },
-          order: { isDone: 'DESC', create_at: 'ASC' },
+          order: { pin: 'DESC', isDone: 'DESC', create_at: 'ASC' },
         });
         return result;
       } catch (error) {
@@ -115,7 +116,7 @@ export class TodoService {
     const findTodoData = await this.todoRepository.find({
       where: {
         user: user,
-        no: In(input.no),
+        no: input.no,
       },
     });
 
@@ -123,6 +124,26 @@ export class TodoService {
       console.log('해당 데이터가 없습니다.');
     }
 
-    await this.todoRepository.update({ no: In(input.no) }, { isDone: true });
+    await this.todoRepository.update({ no: input.no }, { isDone: true });
+  }
+
+  async pinTodo(input: PinTodoDto) {
+    try {
+      let user = await this.userRepository.findOne({
+        where: { email: input.email },
+      });
+
+      const findData = await this.todoRepository.findOne({
+        where: { user: user, no: input.no },
+      });
+
+      if (findData.pin === false) {
+        await this.todoRepository.update(findData.no, { pin: true });
+      } else {
+        await this.todoRepository.update(findData.no, { pin: false });
+      }
+    } catch (error) {
+      console.error(error);
+    }
   }
 }

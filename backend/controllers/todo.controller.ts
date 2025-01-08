@@ -2,6 +2,7 @@ import { Body, Controller, Delete, Get, Post, Put, Res } from '@nestjs/common';
 import {
   CreateTodoDto,
   DeleteTodoDto,
+  PinTodoDto,
   SelectTodoDto,
   SuccessTodoDto,
   UpdateTodoDto,
@@ -34,9 +35,10 @@ export class TodoController {
   }
 
   @Put('update')
-  async updateTodo(@Body() updateTodoDto: UpdateTodoDto) {
+  async updateTodo(@Body() updateTodoDto: UpdateTodoDto, @Res() res: Response) {
     try {
-      return await this.todoService.updateTodo(updateTodoDto);
+      await this.todoService.updateTodo(updateTodoDto);
+      res.status(200).json({ message: '내용 변경 완료' });
     } catch (error) {
       console.error(error);
     }
@@ -50,6 +52,16 @@ export class TodoController {
     try {
       await this.todoService.successTodo(successTodoDto);
       res.status(200).json({ message: '변경 완료' });
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  @Put('pin')
+  async PinTodoDto(@Body() pinTodoDto: PinTodoDto, @Res() res: Response) {
+    try {
+      await this.todoService.pinTodo(pinTodoDto);
+      res.status(200).json({ message: '고정 성공' });
     } catch (error) {
       console.error(error);
     }
