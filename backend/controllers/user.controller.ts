@@ -7,12 +7,11 @@ import {
   Res,
   UseGuards,
 } from '@nestjs/common';
-import { CreateUserDto, LoginDto } from 'dto/user.dto';
-import { Response } from 'express';
+import { CreateUserDto, LoginDto, LogoutDto } from 'dto/user.dto';
+import { Request, Response } from 'express';
 import { UserService } from 'services/user.service';
 import { LocalServiceAuthGuard } from 'auth/jwt/local-service.guard';
 import { AuthService } from 'services/auth.service';
-import { JwtServiceAuthGuard } from 'auth/jwt/jwt-service.guard';
 
 @Controller('user')
 export class UserController {
@@ -62,5 +61,21 @@ export class UserController {
       .json({ message: '로그인 성공', user: token.storageData });
 
     return token;
+  }
+
+  @Post('logout')
+  async logout(@Res() res: Response, @Req() req: Request) {
+    const token_info = {
+      access_token: req.cookies['todo_access_token'],
+      refresh_token: req.cookies['todo_refresh_token'],
+    };
+
+    if (token_info) {
+      await this.authService.logout(token_info);
+    }
+
+    res.clearCookie('todo_access_token');
+    res.clearCookie('todo_refresh_token');
+    res.status(200).json({ message: '로그아웃 성공' });
   }
 }

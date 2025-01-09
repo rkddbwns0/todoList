@@ -33,3 +33,14 @@ export class LoginDto {
   @IsString()
   password: string;
 }
+
+export class LogoutDto {
+  @IsNotEmpty()
+  @IsString()
+  @IsEmail()
+  email: string;
+
+  @IsNotEmpty()
+  @IsString()
+  refresh_token: string;
+}

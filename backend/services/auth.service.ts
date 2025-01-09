@@ -4,7 +4,8 @@ import { UserEntity } from 'entity/user.entity';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
-import { LoginDto } from 'dto/user.dto';
+import { LoginDto, LogoutDto } from 'dto/user.dto';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class AuthService {
@@ -13,6 +14,7 @@ export class AuthService {
     private readonly userRepository: Repository<UserEntity>,
 
     private readonly jwtService: JwtService,
+    private readonly configService: ConfigService,
   ) {}
 
   async login(input: LoginDto) {
@@ -83,5 +85,20 @@ export class AuthService {
     );
 
     return update;
+  }
+
+  async logout(tokenInfo: any) {
+    const decodeRefreshToekn = this.jwtService.verify(tokenInfo.refresh_token, {
+      secret: this.configService.get<string>('JWT_TOKEN_SECRET'),
+    });
+
+    const userId = decodeRefreshToekn.email;
+
+    const user = await this.userRepository.findOne({
+      where: { email: userId },
+    });
+
+    user.refresh_token = null;
+    this.userRepository.save(user);
   }
 }

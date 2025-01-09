@@ -9,7 +9,7 @@ import {
 } from 'dto/todo.dto';
 import { TodoEntity } from 'entity/todo.entity';
 import { UserEntity } from 'entity/user.entity';
-import { In, Repository } from 'typeorm';
+import { In, Like, Raw, Repository } from 'typeorm';
 
 @Injectable()
 export class TodoService {
@@ -22,6 +22,8 @@ export class TodoService {
   ) {}
 
   async selectTodo(input: SelectTodoDto) {
+    const today = new Date();
+    const formatToday = today.toISOString().split('T')[0];
     let user = await this.userRepository.findOne({
       where: { email: input.email },
     });
@@ -31,7 +33,10 @@ export class TodoService {
     } else {
       try {
         const result = await this.todoRepository.find({
-          where: { user },
+          where: {
+            user,
+            create_at: Raw((alias) => `${alias} Like '${formatToday}%'`),
+          },
           order: { pin: 'DESC', isDone: 'DESC', create_at: 'ASC' },
         });
         return result;

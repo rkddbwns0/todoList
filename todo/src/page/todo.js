@@ -4,16 +4,15 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import useStorageUser from './storage/storageUser';
 import '../css/todo.css';
-import { BsFillPinFill } from 'react-icons/bs';
 import TodoDataComponent from '../components/todoDataComponent';
+import Cookies from 'js-cookie';
 
 const Todo = () => {
     const navigate = useNavigate();
     const { user } = useStorageUser();
     const [todoList, setTodoList] = useState([]);
     const [descript, setDescript] = useState('');
-    const [no, setNo] = useState(null);
-    const [changeDes, setCheangDes] = useState(false);
+    const [currentDate, setCurrentDate] = useState(new Date());
 
     const todoData = async () => {
         if (user) {
@@ -48,27 +47,41 @@ const Todo = () => {
         }
     };
 
+    const logout = async () => {
+        if (user) {
+            if (window.confirm('로그아웃 하시겠습니까?')) {
+                try {
+                    const response = await axios.post(`${SERVER_ADDRESS}/user/logout`, {}, { withCredentials: true });
+                    if (response.status === 200) {
+                        localStorage.clear();
+                        navigate('/');
+                    }
+                } catch (error) {
+                    console.error(error);
+                }
+            }
+        }
+    };
+
     useEffect(() => {
         if (user) {
             todoData();
         }
     }, [user]);
 
-    const formmatToday = () => {
-        const today = new Date();
-        const formmatDate = today.toLocaleDateString('ko-KR');
-        return formmatDate;
-    };
+    const today = new Date();
+    const formmatDate = today.toLocaleDateString('ko-KR').slice(0, 10);
 
     return (
         <div className="todoContainer">
             <div className="todoView">
                 <header>
                     <h2>나의 TodoList</h2>
+                    <p onClick={() => logout()}>로그아웃</p>
                 </header>
 
                 <div>
-                    <p>오늘 날짜 : {formmatToday}</p>
+                    <p>오늘 날짜 : {formmatDate}</p>
                 </div>
                 <div className="dataView">
                     <div>

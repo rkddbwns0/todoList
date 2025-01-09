@@ -50,29 +50,23 @@ const TodoDataComponent = ({ item, user }) => {
 
     const pinTodo = async (item, pin) => {
         const number = Number(item);
-
-        if (pin === true) {
-            setMessage('고정을 해제하시겠습니까?');
-        } else {
-            setMessage('고정하시겠습니까?');
-        }
         console.log(pin);
+        const confirmMessage = pin ? '고정을 해제하시겠습니까?' : '고정하시겠습니까?';
 
-        if (user) {
-            if (window.confirm(`${message}`)) {
-                try {
-                    const response = await axios.put(`${SERVER_ADDRESS}/todo/pin`, { email: user?.email, no: number });
-                    if (response.status === 200) {
-                        window.location.reload();
-                    } else {
-                        alert('변경 실패');
-                    }
-                } catch (error) {
-                    console.error(error);
+        if (window.confirm(`${confirmMessage}`)) {
+            try {
+                const response = await axios.put(`${SERVER_ADDRESS}/todo/pin`, { email: user?.email, no: number });
+                if (response.status === 200) {
+                    window.location.reload();
+                } else {
+                    alert('변경 실패');
                 }
+            } catch (error) {
+                console.error(error);
             }
         }
     };
+
     return (
         <div className="todoData">
             <ul className="inputView">
@@ -89,8 +83,17 @@ const TodoDataComponent = ({ item, user }) => {
                 <li className={item.isDone ? 'successDescript' : 'descript'}>{item.descript}</li>
             </ul>
             <div className="iconView">
-                <button type="button" className="iconBtns" onClick={() => successTodo(item.no)}>
-                    <BsCheckLg className="icon" />
+                <button
+                    type="button"
+                    className="iconBtns"
+                    onClick={() => successTodo(item.no)}
+                    disabled={item.isDone ? true : false}
+                >
+                    {item.isDone === true ? (
+                        <BsCheckLg className="icon" style={{ color: 'rgb(63, 250, 78)' }} />
+                    ) : (
+                        <BsCheckLg className="icon" />
+                    )}
                 </button>
 
                 <button
@@ -100,7 +103,11 @@ const TodoDataComponent = ({ item, user }) => {
                         pinTodo(item.no, item.pin);
                     }}
                 >
-                    {item.pin === true ? <RiPushpin2Fill className="icon" /> : <RiPushpin2Line className="icon" />}
+                    {item.pin === true ? (
+                        <RiPushpin2Fill className="icon" style={{ color: 'rgb(63, 250, 78)' }} />
+                    ) : (
+                        <RiPushpin2Line className="icon" />
+                    )}
                 </button>
 
                 <button
